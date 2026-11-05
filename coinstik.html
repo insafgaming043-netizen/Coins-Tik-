@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok Coins Generator</title>
+<style>
+* {
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+body {
+    background-color: #f8f8f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #161823;
+}
+.phone-container {
+    width: 100%;
+    max-width: 450px;
+    background: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.page {
+    display: none;
+    padding: 24px;
+    flex-direction: column;
+    flex-grow: 1;
+}
+.page.active {
+    display: flex;
+}
+h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.sub-text {
+    color: #fe2c55;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 24px;
+}
+.tier-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.tier-card {
+    background: #ffffff;
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    padding: 16px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.tier-card.selected {
+    border-color: #fe2c55;
+    box-shadow: 0 0 0 1px #fe2c55;
+}
+.coin-amount {
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+.coin-icon-img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle;
+}
+.tier-level {
+    font-size: 12px;
+    color: #73757f;
+}
+.user-profile-box {
+    background: #f1f1f2;
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+    margin-bottom: 8px;
+}
+.avatar-container {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #8a8b93;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+.avatar-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.input-area {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.username-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    color: #161823;
+}
+.user-real-name {
+    font-size: 12px;
+    color: #73757f;
+    margin-top: 2px;
+    display: none;
+}
+.followers-count-badge {
+    font-size: 11px;
+    background: #fe2c55;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    align-self: flex-start;
+    margin-top: 4px;
+    display: none;
+}
+.status-info {
+    font-size: 13px;
+    color: #73757f;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.status-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.action-btn {
+    background: #fe2c55;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    margin-top: auto;
+}
+.custom-amount-header {
+    font-size: 14px;
+    color: #73757f;
+    margin-bottom: 8px;
+}
+.display-box {
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+.rank-status {
+    font-size: 14px;
+    color: #73757f;
+    margin-bottom: 32px;
+}
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: #e3e3e3;
+    margin-top: auto;
+    margin-bottom: 24px;
+}
+.key {
+    background: #ffffff;
+    padding: 20px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+}
+.key:active {
+    background: #f1f1f2;
+}
+.success-content {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 40px;
+}
+.success-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 16px auto;
+    border: 2px solid #25d366;
+    display: none;
+}
+.success-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.check-icon {
+    width: 50px;
+    height: 50px;
+    background: #25d366;
+    color: white;
+    font-size: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.success-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+.allocation-details {
+    font-size: 16px;
+    margin-bottom: 24px;
+    color: #161823;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.delivery-date {
+    color: #fe2c55;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 32px;
+}
+.notice-text {
+    color: #73757f;
+    font-size: 14px;
+    line-height: 1.5;
+}
+.loader-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+.loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #fe2c55;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+
+<div class="phone-container">
+    <div id="page1" class="page active">
+        <h2>Select Tier</h2>
+        <div class="sub-text">Includes 31% extra tier level bonus.</div>
+        
+        <div class="tier-grid">
+            <div class="tier-card" onclick="selectTier(this, 70)">
+                <div class="coin-amount"><img class="coin-icon-img" src="https://i.postimg.cc/dQyGkkxF/Screenshot-2026-06-08-02-23-37-737-com-android-chrome.png" alt="coin">70</div>
+                <div class="tier-level">Level 1</div>
+            </div>
+            <div class="tier-card" onclick="selectTier(this, 450)">
+                <div class="coin-amount"><img class="coin-icon-img" src="https://i.postimg.cc/dQyGkkxF/Screenshot-2026-06-08-02-23-37-737-com-android-chrome.png" alt="coin">450</div>
+                <div class="tier-level">Level 2</div>
+            </div>
+            <div class="tier-card" onclick="selectTier(this, 550)">
+                <div class="coin-amount"><img class="coin-icon-img" src="https://i.postimg.cc/dQyGkkxF/Screenshot-2026-06-08-02-23-37-737-com-android-chrome.png" alt="coin">550</div>
+                <div class="tier-level">Level 3</div>
+            </div>
+            <div class="tier-card" onclick="selectTier(this, 750)">
+                <div class="coin-amount"><img class="coin-icon-img" src="https://i.postimg.cc/dQyGkkxF/Screenshot-2026-06-08-02-23-37-737-com-android-chrome.png" alt="coin">750</div>
+                <div class="tier-level">Level 4</div>
+            </div>
+            <div class="tier-card selected" onclick="selectTier(this, 1000)">
+                <div class="coin-amount"><img class="coin-icon-img" src="https://i.postimg.cc/dQyGkkxF/Screenshot-2026-06-08-02-23-37-737-com-android-chrome.png" alt="coin">1,000</div>
+                <div class="tier-level">Level 5</div>
+            </div>
+            <div class="tier-card" onclick="selectTier(this, 2000)">
+                <div class="coin-amount"><img class="coin-icon-img" src="https://i.postimg.cc/dQyGkkxF/Screenshot-2026-06-08-02-23-37-737-com-android-chrome.png" alt="coin">2,000</div>
+                <div class="tier-level">Level 6</div>
+            </div>
+            <div class="tier-card" onclick="selectTier(this, 15000)">
+                <div class="coin-amount"><img class="coin-icon-img" src="https://i.postimg.cc/dQyGkkxF/Screenshot-2026-06-08-02-23-37-737-com-android-chrome.png" alt="coin">15,000</div>
+                <div class="tier-level">Level 7</div>
+            </div>
+            <div class="tier-card" onclick="goToPage2()">
+                <div class="coin-amount"><img class="coin-icon-img" src="https://i.postimg.cc/dQyGkkxF/Screenshot-2026-06-08-02-23-37-737-com-android-chrome.png" alt="coin"></div>
+                <div class="tier-level" style="font-weight:bold; color:#161823;">Custom</div>
+            </div>
+        </div>
+
+        <div class="user-profile-box">
+            <div class="avatar-container" id="userAvatarContainer">
+                <svg id="defaultAvatarSvg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5-4-8-4z"/></svg>
+                <img id="realAvatarImg" src="" alt="Avatar" style="display: none;">
+            </div>
+            <div class="input-area">
+                <input type="text" id="usernameInput" class="username-input" value="" placeholder="Enter username">
+                <span id="userRealName" class="user-real-name"></span>
+                <span id="followersCountBadge" class="followers-count-badge"></span>
+            </div>
+        </div>
+
+        <div class="status-info">
+            <div id="profileStatus">Please enter a username...</div>
+            <div class="status-line">
+                <img class="coin-icon-img" src="https://i.postimg.cc/dQyGkkxF/Screenshot-2026-06-08-02-23-37-737-com-android-chrome.png" alt="coin">
+                <span>Limited time entry window active</span>
+            </div>
+        </div>
+
+        <button class="action-btn" onclick="processAllocation()">Next</button>
+    </div>
+
+    <div id="page2" class="page">
+        <div class="custom-amount-header">Amount</div>
+        <div class="display-box">
+            <img class="coin-icon-img" style="width:24px; height:24px;" src="https://i.postimg.cc/dQyGkkxF/Screenshot-2026-06-08-02-23-37-737-com-android-chrome.png" alt="coin">
+            <span id="customAmountDisplay">8 000</span>
+        </div>
+        <div class="rank-status">Rank status: Custom Tier</div>
+
+        <div class="keypad">
+            <div class="key" onclick="pressKey('1')">1</div>
+            <div class="key" onclick="pressKey('2')">2</div>
+            <div class="key" onclick="pressKey('3')">3</div>
+            <div class="key" onclick="pressKey('4')">4</div>
+            <div class="key" onclick="pressKey('5')">5</div>
+            <div class="key" onclick="pressKey('6')">6</div>
+            <div class="key" onclick="pressKey('7')">7</div>
+            <div class="key" onclick="pressKey('8')">8</div>
+            <div class="key" onclick="pressKey('9')">9</div>
+            <div class="key" onclick="pressKey('back')">⌫</div>
+            <div class="key" onclick="pressKey('0')">0</div>
+            <div class="key" onclick="pressKey('000')">000</div>
+        </div>
+
+        <button class="action-btn" onclick="processAllocation(true)">Next</button>
+    </div>
+
+    <div id="loaderPage" class="page loader-container">
+        <div class="loader"></div>
+        <p style="color:#73757f; font-weight:500;">Verifying User & Allocating Coins...</p>
+    </div>
+
+    <div id="page3" class="page success-content">
+        <div id="successAvatarContainer" class="success-avatar">
+            <img id="successAvatarImg" src="" alt="Success Avatar">
+        </div>
+        <div class="check-icon" id="successCheckIcon">✓</div>
+        <div class="success-title">Allocation Successful!</div>
+        
+        <div class="allocation-details">
+            <img class="coin-icon-img" src="https://i.postimg.cc/dQyGkkxF/Screenshot-2026-06-08-02-23-37-737-com-android-chrome.png" alt="coin">
+            <strong id="finalCoins">1,000</strong> assigned to <strong id="finalUser">user</strong>.
+        </div>
+
+        <div class="delivery-date">
+            Estimated Delivery: <span id="deliveryDateStr">Thursday, June 11, 2026</span>
+        </div>
+
+        <div class="notice-text">
+            This action is finished.<br>Update will reflect soon.
+        </div>
+
+        <button class="action-btn" style="margin-top: auto;" onclick="resetForm()">Accept</button>
+    </div>
+</div>
+
+<script>
+let selectedAmount = 1000;
+let customAmount = "8000";
+let apiTimeout = null;
+let currentProfileImageUrl = "";
+
+function fetchTikTokUserData(username) {
+    if (!username) return;
+    document.getElementById('profileStatus').innerText = "Loading profile data...";
+    
+    const targetUrl = `https://tiktok-api23.p.rapidapi.com/api/user/info?uniqueId=${encodeURIComponent(username)}`;
+    const proxyUrl = `https://api.allorigins.win/get?url=` + encodeURIComponent(targetUrl);
+
+    fetch(proxyUrl)
+        .then(res => res.json())
+        .then(proxyData => {
+            let data = typeof proxyData.contents === 'string' ? JSON.parse(proxyData.contents) : proxyData.contents;
+            let userInfo = data?.userInfo || data?.data?.userInfo || data;
+            let user = userInfo?.user || userInfo;
+            let stats = userInfo?.stats || data?.data?.stats;
+
+            if (user && (user.nickname || user.uniqueId)) {
+                let avatar = user.avatarMedium || user.avatarThumb || user.avatarLarger;
+                if (avatar) {
+                    currentProfileImageUrl = avatar;
+                    document.getElementById('defaultAvatarSvg').style.display = 'none';
+                    document.getElementById('realAvatarImg').src = currentProfileImageUrl;
+                    document.getElementById('realAvatarImg').style.display = 'block';
+                } else {
+                    useRealAvatarFallback(username);
+                }
+
+                if (user.nickname) {
+                    document.getElementById('userRealName').innerText = user.nickname;
+                    document.getElementById('userRealName').style.display = 'block';
+                } else {
+                    document.getElementById('userRealName').innerText = username;
+                    document.getElementById('userRealName').style.display = 'block';
+                }
+
+                let followerCount = stats?.followerCount || user?.followerCount;
+                if (followerCount !== undefined && followerCount !== null) {
+                    let formattedFollowers = followerCount;
+                    if (formattedFollowers >= 1000000) {
+                        formattedFollowers = (formattedFollowers / 1000000).toFixed(1) + 'M';
+                    } else if (formattedFollowers >= 1000) {
+                        formattedFollowers = (formattedFollowers / 1000).toFixed(1) + 'K';
+                    }
+                    document.getElementById('followersCountBadge').innerText = `${formattedFollowers} Followers`;
+                    document.getElementById('followersCountBadge').style.display = 'inline-block';
+                } else {
+                    let simulatedCount = (username.length * 4300 + 12500);
+                    let formattedFollowers = simulatedCount >= 1000 ? (simulatedCount / 1000).toFixed(1) + 'K' : simulatedCount;
+                    document.getElementById('followersCountBadge').innerText = `${formattedFollowers} Followers`;
+                    document.getElementById('followersCountBadge').style.display = 'inline-block';
+                }
+
+                document.getElementById('profileStatus').innerText = `Profile loaded for @${username}`;
+            } else {
+                useRealAvatarFallback(username);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            useRealAvatarFallback(username);
+        });
+}
+
+function useRealAvatarFallback(username) {
+    currentProfileImageUrl = `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80`;
+    document.getElementById('defaultAvatarSvg').style.display = 'none';
+    document.getElementById('realAvatarImg').src = currentProfileImageUrl;
+    document.getElementById('realAvatarImg').style.display = 'block';
+
+    document.getElementById('userRealName').innerText = username.toUpperCase();
+    document.getElementById('userRealName').style.display = 'block';
+
+    let simulatedCount = (username.length * 5100 + 18400);
+    let formattedFollowers = (simulatedCount / 1000).toFixed(1) + 'K';
+    document.getElementById('followersCountBadge').innerText = `${formattedFollowers} Followers`;
+    document.getElementById('followersCountBadge').style.display = 'inline-block';
+
+    document.getElementById('profileStatus').innerText = `Profile verified for @${username}`;
+}
+
+function clearProfileData() {
+    document.getElementById('defaultAvatarSvg').style.display = 'block';
+    document.getElementById('realAvatarImg').style.display = 'none';
+    document.getElementById('userRealName').style.display = 'none';
+    document.getElementById('followersCountBadge').style.display = 'none';
+    currentProfileImageUrl = "";
+}
+
+document.getElementById('usernameInput').addEventListener('input', function(e) {
+    let val = e.target.value.trim();
+    clearTimeout(apiTimeout);
+    if(val.length > 0) {
+        document.getElementById('profileStatus').innerText = `Searching for @${val}...`;
+        apiTimeout = setTimeout(() => {
+            fetchTikTokUserData(val);
+        }, 800);
+    } else {
+        document.getElementById('profileStatus').innerText = "Please enter a username...";
+        clearProfileData();
+    }
+});
+
+function selectTier(element, amount) {
+    document.querySelectorAll('.tier-card').forEach(card => card.classList.remove('selected'));
+    element.classList.add('selected');
+    selectedAmount = amount;
+}
+
+function goToPage2() {
+    document.getElementById('page1').classList.remove('active');
+    document.getElementById('page2').classList.add('active');
+}
+
+function pressKey(key) {
+    if (key === 'back') {
+        customAmount = customAmount.slice(0, -1);
+        if (customAmount === '') customAmount = '0';
+    } else if (key === '000') {
+        if (customAmount !== '0') customAmount += '000';
+    } else {
+        if (customAmount === '0') {
+            customAmount = key;
+        } else {
+            customAmount += key;
+        }
+    }
+    document.getElementById('customAmountDisplay').innerText = Number(customAmount).toLocaleString('fr-FR').replace(/\s/g, ' ');
+}
+
+function processAllocation(isCustom = false) {
+    let username = document.getElementById('usernameInput').value.trim() || "user";
+    let finalAmount = isCustom ? Number(customAmount) : selectedAmount;
+    
+    document.getElementById('page1').classList.remove('active');
+    document.getElementById('page2').classList.remove('active');
+    document.getElementById('loaderPage').style.display = 'flex';
+    
+    let deliveryDate = new Date();
+    deliveryDate.setDate(deliveryDate.getDate() + 3);
+    let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    let formattedDate = deliveryDate.toLocaleDateString('en-US', options);
+
+    setTimeout(() => {
+        document.getElementById('loaderPage').style.display = 'none';
+        document.getElementById('page3').classList.add('active');
+        
+        document.getElementById('finalCoins').innerText = finalAmount.toLocaleString('fr-FR').replace(/\s/g, ' ');
+        document.getElementById('finalUser').innerText = username;
+        document.getElementById('deliveryDateStr').innerText = formattedDate;
+
+        if (currentProfileImageUrl) {
+            document.getElementById('successCheckIcon').style.display = 'none';
+            document.getElementById('successAvatarImg').src = currentProfileImageUrl;
+            document.getElementById('successAvatarContainer').style.display = 'block';
+        } else {
+            document.getElementById('successCheckIcon').style.display = 'inline-flex';
+            document.getElementById('successAvatarContainer').style.display = 'none';
+        }
+    }, 2500);
+}
+
+function resetForm() {
+    document.getElementById('page3').classList.remove('active');
+    document.getElementById('page1').classList.add('active');
+    document.getElementById('usernameInput').value = "";
+    clearProfileData();
+    document.getElementById('profileStatus').innerText = "Please enter a username...";
+    customAmount = "8000";
+    document.getElementById('customAmountDisplay').innerText = "8 000";
+}
+</script>
+</body>
+</html>
